@@ -1,0 +1,252 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage{stringenc} % for grffile
+\usepackage{ucs}
+\usepackage{amsthm} %numéroter les questions
+\usepackage[english]{babel}
+\usepackage{datetime}
+\usepackage{xspace} % typographie IN
+\usepackage{hyperref}% hyperliens
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+\usepackage[english]{varioref} %voir x p y
+\usepackage{fancyhdr}% en têtes
+%\input cyracc.def
+\usepackage[]{graphicx} %include pictures
+%\usepackage[encoding,inputencoding=utf8,filenameencoding=utf8]{grffile}
+%\usepackage[extendedchars,inputencoding=latin1,filenameencoding=latin1]{grffile}
+\usepackage[siunitx ]{circuitikz}
+\usepackage{gnuplottex}
+\usepackage{ifthen}
+\graphicspath{{./figures/}}
+%\usepackage{array}
+\usepackage{amsmath}
+\usepackage[]{xcolor}
+\usepackage{tikz}
+\usepackage{tikz-timing}
+\usetikzlibrary{scopes}
+\usetikzlibrary{backgrounds}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage[top=1 in, bottom=1 in, left=1.3 in, right=1 in]{geometry} % Yeah, that's bad to play with margins
+\usepackage[]{pdfpages}
+\usepackage{pdflscape}
+\usepackage[]{attachfile}
+%\usepackage{colortbl}
+%\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage[ ]{subfig}
+%\usepackage{rotating}
+\usepackage{upgreek}
+
+\newdateformat{mydate}{2017--2018}%hack pour remplacer \THEYEAR
+
+%cyr
+%\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
+\renewcommand{\marginpar}[1]{} %surcharge pour /marginpar
+
+\newboolean{corrige}
+%\setboolean{corrige}{true}%corrigé
+\setboolean{corrige}{false}% pas de corrigé
+
+\newboolean{annexes}
+%\setboolean{annexes}{true}%annexes
+\setboolean{annexes}{false}% pas de annexes
+
+\newboolean{mos}
+%\setboolean{mos}{true}%annexes
+\setboolean{mos}{false}% pas de annexes
+
+\usepackage{aeguill} %guillemets
+
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-410] Real-Time systems Lab n° 3: \uCOSII}
+\rhead{\mydate\today\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
+\cfoot{}
+%%
+
+\pdfinfo{
+/Author (Yannick Allard - Raoul Sommeillier, ULB -- BEAMS)
+/Title (Lab 3 ELEC-H-410, uCOS-II)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={Lab n° 3 [ELEC-H-410] Real-Time systems},
+pdfauthor={Yannick Allard - Raoul Sommeillier, ©2014-17 ULB - BEAMS  },
+pdfsubject={uCOS-II}
+}
+
+\theoremstyle{definition}% questions pas en italique
+\newtheorem{E}{\color{blue}Exercise}[] % numéroter les questions [section] ou non []
+
+\newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
+	\ifthenelse {\boolean{corrige}} {\paragraph{Answer :} #1} {}
+ }
+
+\newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
+
+\newcommand{\on}[1]{\operatorname{#1}}
+
+\newcommand{\reg}[1]{\texttt{reg#1}}
+
+\newcommand{\uCOSII}{$\upmu$C/OS-II}
+
+\newcommand{\kw}[1]{\texttt{#1}}
+
+\setlength{\parskip}{1ex plus .5ex minus .5ex} % espacement entre paragraphes
+\setlength{\parindent}{0 ex plus 0ex minus 0 ex} % retrait en début de §
+
+\def\labelitemi{--}
+\setlist{parsep=0pt,itemsep=0pt,style=standard,leftmargin=\parindent, align=left} % pas d'espace prohibitif entre les items
+\setlist{nolistsep}
+
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+%\setlength{\tabcolsep}{0pt} %no extra space in cells to keep constant tabular width
+
+\date{\vspace{-1cm}\mydate\today}
+\title{\vspace{-2cm} Lab n° 3\\ Real-Time systems [ELEC-H-410]\\ CAN network overview\ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+%\author{\vspace{-1cm}}%\textsc{Yannick Allard}}
+
+
+\lstdefinestyle{customasm}{
+ % belowcaptionskip=1\baselineskip,
+ % frame=L,
+ % xleftmargin=\parindent,
+  language=[x86masm]Assembler,
+  basicstyle=\footnotesize\ttfamily,
+  commentstyle=\itshape\color{purple!40!black},
+  comment=[l]//,
+}
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=L,
+  xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+}
+\lstset{escapechar=@,style=customc}
+
+\begin{document}
+
+% Introduce a new counter for counting the nodes needed for circling
+\newcounter{nodecount}
+% Command for making a new node and naming it according to the nodecount counter
+\newcommand\tabnode[1]{\addtocounter{nodecount}{1} \tikz \node (\arabic{nodecount}) {#1};}
+
+% Some options common to all the nodes and paths
+\tikzstyle{every picture}+=[remember picture,baseline]
+\tikzstyle{every node}+=[inner sep=0pt,anchor=base]
+\tikzstyle{every path}+=[thick, rounded corners]
+
+% for tikz pict
+
+
+\maketitle
+\section*{Purpose}
+
+This lab aims at giving a short overview of the CAN network. You will first study the CAN features then write an application sending and receiving messages.
+
+
+
+\subsection*{Useful documents are stored on the network share:}
+ \verb!\\labo\ELEC-H-410\Useful Documents\!%\marginpar{OK update this}
+\texttt{\begin{itemize}
+\item dsPIC30F-33F Programmer's Reference.pdf
+\item dsPIC33 Data Sheet.pdf section 21
+\item Introduction to MPLAB.pdf
+\item Explorer 16 User Guide 51589a.pdf
+\item MPLAB C30 C Compiler User's guide.pdf
+\item uCOSII\_RefMan.pdf
+\item Enhanced Controller Area Network.pdf
+\item Introduction to language C for microcontrollers.pdf
+\item Table of ASCII codes.
+\item Troubleshooting \uCOSII 
+\end{itemize}}
+
+%*
+%*
+%Introduction à MPLAB.pdf*
+%*
+%La Carte Explorer16.pdf*
+%*
+%*
+
+
+\section{CAN and dsPIC33}
+Plug the CAN network yellow twisted pair in the DB9 connector of the Explorer 16 extension Board.
+
+You will program the CAN peripheral of the dsPIC to send a message, then to
+receive messages transmitted continuously by a PC of the laboratory.
+
+\subsection{Read the manual\dots}
+Open the datasheet of the \kw{Enhanced Controller Area Network.pdf}, read:
+\begin{itemize}
+\item CAN module overview : p2--5
+\item Message transmission: p35 and following
+\item Message reception: p41 and following
+\end{itemize}
+
+\E{Describe a CAN bus message. }{}
+
+As you can see on figure 21-1, the dsPIC contains 32 buffers for transmission/reception, which can
+be configured either in reception, or in transmission. These buffers are not directly in the CAN
+peripheral. 
+
+\E{Explain which mechanism enables to access to the CAN peripheral and what are the
+advantages of this mechanism.}{}
+
+The buffers for reception use a particular mechanism to filter the identifiers of the messages. 
+
+\E{Explain this mechanism. What are the advantages and disadvantages?}{}
+
+
+\subsection{\dots and use your knowledge}
+Open the project \kw{OSCan}.
+
+A library of functions has been developed to facilitate the use of the CAN peripheral (see files
+\kw{CanDspic.c} and \kw{CanDspic.h}).
+
+Examine the file \kw{CanDspic.h}. Observe the structure that has been set for the CAN buffers.
+Refer to section 21.4 of the pdf for more details.
+
+\E{Which configuration was chosen for the CAN buffers?}{}
+
+In the function \kw{main()}, configure the CAN peripheral for a bit rate of 500kbps. An initializing
+function allows you to configure automatically the first 7 buffers in reception and the 8th buffer in
+transmission.
+
+\E{Continuously send  a CAN message on the network (at a rate of 1s). This message must contain
+an ASCII string of maximum 8 characters of your choice. Use as ID $(0\mbox{x}180 + y)$, with $y$ your group number. To check that your message is correctly sent, one of the nodes of the lab has been programmed to monitor and displays all the messages passing on the bus.
+}{}
+
+You shall now receive and process messages transmitted on the network. A PC node has been programmed to
+send permanently 4 messages on the network. Your goal is to find what are these messages and their
+contents. The reception of the messages should be done by interruption. You will find a skeleton of the
+interrupt service routine in \kw{CANRxInterrupt.c}.
+
+\E{Configure the reception of CAN messages and activate the interruptions in \kw{main()}}{}
+
+\E{ Write the interrupt service allowing to find a first message. An ISR should be as short as possible and should only used for basic data processing and to transfer data to tasks (see previous lab for communication structures)}{}
+
+In the case of interrupt nesting, \kw{OSIntEnter()} and \kw{OSIntExit()} should be used but that's not necessary with the current OS configuration (see reference manual pp. 29 – 31).
+
+%\E{Explain the utility of \kw{OSIntEnter()} and \kw{OSIntExit()}.}{}
+
+\E{ Modify your code to receive the other messages.
+You can implement a ``software only" filter if you want. Once you have received the 4 messages, decode
+them using the ASCII table and follow the instructions they contain.}{}
+
+
+\end{document}
