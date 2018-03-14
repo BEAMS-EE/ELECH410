@@ -227,8 +227,10 @@ In the function \kw{main()}, configure the CAN peripheral for a bit rate of 500k
 function allows you to configure automatically the first 7 buffers in reception and the 8th buffer in
 transmission.
 
-\E{Continuously send  a CAN message on the network (at a rate of 1s). This message must contain
-an ASCII string of maximum 8 characters of your choice. Use as ID $(0\mbox{x}180 + y)$, with $y$ your group number. To check that your message is correctly sent, one of the nodes of the lab has been programmed to monitor and displays all the messages passing on the bus.
+\E{Based on the \kw{IntroCan} project, write a task that continuously send a CAN message on the network
+(at a rate of 1s). This message must contain an ASCII string of maximum 8 characters of your choice. Use
+as ID $(0\mbox{x}180 + y)$, with $y$ your group number. To check that your message is correctly sent, one
+of the nodes of the lab has been programmed to monitor and displays all the messages passing on the bus.
 }{}
 
 You shall now receive and process messages transmitted on the network. A PC node has been programmed to
@@ -238,13 +240,22 @@ interrupt service routine in \kw{CANRxInterrupt.c}.
 
 \E{Configure the reception of CAN messages and activate the interruptions in \kw{main()}}{}
 
-\E{ Write the interrupt service allowing to find a first message. An ISR should be as short as possible and should only used for basic data processing and to transfer data to tasks (see previous lab for communication structures)}{}
+\E{Write the interrupt service allowing to find a first message (ID: 153). An ISR should be as short as
+possible and should only be used for basic data processing and to transfer data to tasks (see previous lab
+for communication structures). By using a mailbox write a task that will print the content of the message
+on the LCD screen. You might need to make a copy of the buffer using the following code.}{}
+\begin{lstlisting}[caption={Buffer copy}, label={lst:listing 1}]
+char message[8];
+...
+Str_Copy_N(message, receiveBuffers[0].DATA, receiveBuffers[0].DLC);
+...
+\end{lstlisting}
 
 In the case of interrupt nesting, \kw{OSIntEnter()} and \kw{OSIntExit()} should be used but that's not necessary with the current OS configuration (see reference manual pp. 29 – 31).
 
 %\E{Explain the utility of \kw{OSIntEnter()} and \kw{OSIntExit()}.}{}
 
-\E{ Modify your code to receive the other messages.
+\E{ Modify your code to receive the other messages (ID: 154, 155, 156).
 You can implement a ``software only" filter if you want. Once you have received the 4 messages, decode
 them using the ASCII table and follow the instructions they contain.}{}
 
