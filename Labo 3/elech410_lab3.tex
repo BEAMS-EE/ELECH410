@@ -243,13 +243,14 @@ interrupt service routine in \kw{CANRxInterrupt.c}.
 \E{Write the interrupt service allowing to find a first message (ID: 153). An ISR should be as short as
 possible and should only be used for basic data processing and to transfer data to tasks (see previous lab
 for communication structures). By using a mailbox write a task that will print the content of the message
-on the LCD screen. You might need to make a copy of the buffer using the following code.}{}
-\begin{lstlisting}[caption={Buffer copy}, label={lst:listing 1}]
-char message[8];
-...
-Str_Copy_N(message, receiveBuffers[0].DATA, receiveBuffers[0].DLC);
-...
-\end{lstlisting}
+on the LCD screen. 
+% You might need to make a copy of the buffer using the following code.}{}
+% \begin{lstlisting}[caption={Buffer copy}, label={lst:listing 1}]
+% char message[8];
+% ...
+% Str_Copy_N(message, receiveBuffers[0].DATA, receiveBuffers[0].DLC);
+% ...
+% \end{lstlisting}
 
 In the case of interrupt nesting, \kw{OSIntEnter()} and \kw{OSIntExit()} should be used but that's not necessary with the current OS configuration (see reference manual pp. 29 – 31).
 
