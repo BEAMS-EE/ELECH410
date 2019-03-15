@@ -1,0 +1,51 @@
+\section{Sharing resources}
+
+The simplest way to make two tasks communicate is to use structures of shared data: most of the time they are global variables. It is then necessary to establish a mechanism of protection to control the access to these variables.
+
+Open the project \kw{resource\_sharing}.
+\E{
+	~\\\vspace*{-1.5Em}
+	\begin{itemize}
+		\item Analyse the code, knowing that each task is executed only \textbf{once} (\kw{vTaskSuspend()} is called at the end of the \textit{for} loop), what should be the value of the global variable \kw{cntr} at the end of the execution?
+		\item Compile and execute the code.
+		\item Using a watch window and the debugger, check the value of \kw{cntr}. Is this the expected result? Why? (Use the logic analyser to help)
+	\end{itemize}
+}{}\reponse{
+    \kw{cntr} should be $ 2 $ at the end of the execution.
+    Go in debug mode, select Debug > Windows > Watch > 1 and type cntr.
+    \kw{cntr} is equals to $ 1 $. 
+}
+
+%To protect the shared variables, uC/OS-II proposes two main solutions: \textbf{masking the interruptions} or using a \textbf{mutex}.
+
+%The first solution is very efficient, but can only be used for very short lapses of time (shorter than the critical sections created by the RTOS itself), otherwise the latency time of the interruptions is increased and preemption of the task is blocked, which is against real-time.
+
+The \textbf{mutex} (see chapter over priority-driven systems) is a convenient way to protect shared data, while still handling interrupts and authorise the preemption of the running task. Note: when a task acquires a resource via \kw{xSemaphoreGive()}, it should not forget to release it via \kw{xSemaphoreTake()}. A pseudo code is given in Listing \ref{lst:listing 1}.
+
+\vbox{
+\begin{lstlisting}[caption={Mutex declaration/use}, label={lst:listing 1}]
+    // [...]
+    SemaphoreHandle_t myMutex; // declaration as global variable
+    myMutex = xSemaphoreCreateMutex(); // creation
+
+    void function() {
+        // [...]
+        xSemaphoreTake( myMutex, portMAX_DELAY );
+        // operations on the shared resource ...
+        xSemaphoreGive( myMutex );
+        // [...]
+    }
+\end{lstlisting}
+}
+
+
+The first 2 lines of Listing \ref{lst:listing 1} create a mutex by:
+\begin{itemize}
+    \item declaring a handler with the type \kw{SemaphoreHandle\_t}. This declaration must be global, so that the mutex is visible from anywhere in the program.
+    \item creating the mutex.
+\end{itemize}
+For more details, see the official \rtos~ documentation.
+
+\E{
+    Modify the code of the \kw{ressource\_sharing} project by using a mutex to obtain the expected result for \kw{cntr}.
+}{}

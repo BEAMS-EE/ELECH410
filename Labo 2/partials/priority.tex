@@ -1,0 +1,10 @@
+\section{Priority inheritance}
+
+Mutexes in \rtos~ uses a particular version of the priority inheritance. 
+If a high priority task blocks while attempting to obtain a mutex that is currently held by a lower priority task, then the priority of the task holding the token is temporarily raised to that of the blocking task. This mechanism is designed to ensure the higher priority task is kept in the blocked state for the shortest time possible, and in so doing minimise the 'priority inversion' that has already occurred\footnote{for more details see \url{https://www.freertos.org/Real-time-embedded-RTOS-mutexes.html}}.
+
+Open the project \kw{prio\_inheritance}.
+
+\E{
+    Observe the mechanism with the logic analyser.
+}{}

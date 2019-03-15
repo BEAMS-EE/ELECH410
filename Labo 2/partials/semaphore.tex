@@ -1,0 +1,53 @@
+\section{Use of a semaphore}
+
+The semaphores (in a flag version) allows a synchronisation between tasks or between an interrupt service routine (ISR) and a task.
+
+In the Listing \ref{lst:listing 2}, \kw{Task1} immediately goes to the ``waiting" state until another \kw{Task2} has
+reached a certain point of its execution, then \kw{Task1} resumes its execution.
+
+\begin{lstlisting}[caption={Semaphore example}, label={lst:listing 2}]
+    SemaphoreHandle_t startTask1;
+    startTask1 = xSemaphoreCreateBinary();
+    
+    Task1(){
+        for(;;){
+            xSemaphoreTake( startTask1, portMAX_DELAY ); // Task 1 goes "waiting"
+            // [...]
+        }
+    }
+    
+    Task2(){
+        for(;;){
+            xSemaphoreGive( startTask1 ); //Task1 goes to "ready"
+            // [...]
+        }
+    }
+\end{lstlisting}
+
+% It should be noted that several ``flags" can be posted in the same semaphore (counting semaphore). Thus a task can require that an event occurs several times before resuming its execution. In the same way, several tasks can synchronise on the same event if this event posts several flags in the same semaphore (each task gets one of the flags).
+
+% For more information, see \uCOSII~user's manual pp 92-97.
+
+Open the project entitled \kw{synchronisation}.
+
+This project consists in decoding a sound from a waveform and send it to the jack output of the extension board (connect your own headphones !).
+It makes use of the Digital to Analogue (DAC) block embedded in the Analogue Block Array of the board.
+You may observe its configuration in the \kw{TopDesign} tab.
+
+The project contains two tasks:
+\begin{itemize}
+    \item \kw{decodeTask}, which decodes a sound by batches of 64 samples (long execution time). It uses the \kw{decodeSoundFrame()} function.
+    \item \kw{dacTask} which reads the decoded samples and sends them at 1kHz to the DAC connected to the jack output of the extension board.
+\end{itemize} 
+
+To ensure continuous streaming of the sound, two buffers of samples are being used (\kw{buf1[]} and \kw{buf[2]}). 
+When one is being decoded by the \kw{decodeTask} task, the other one is played with the \kw{dacTask}. 
+Of course this only works if both tasks are synchronised.
+A first semaphore was placed in this code so that the first samples are not sent to the DAC before they actually have been decoded.
+If you run the code you will see that this does not work.
+
+\E{
+    Modify the code so that a new batch of decoded samples is not written in one of the two buffers before the previous batch has been completely send to the DAC.
+    You may need to add another semaphore.
+}{}
+%\E{Use an additional semaphore so that a new batch of decoded samples is not written in one of the two buffers (\kw{buf0[]} or \kw{buf1[]}) by \kw{AppTaskSpeex} before the previous batch has been completely send to the loudspeaker by \kw{AppTaskDac}. }{}

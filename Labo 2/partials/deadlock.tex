@@ -1,0 +1,15 @@
+\section{Deadlock problem}
+
+Improper use of the mutex (or of any other mechanism of synchronisation between tasks) can bring
+to a situation where no task can be executed anymore, this is called a \textit{deadlock} situation.
+
+Open the \kw{Deadlock} project and launch its execution.
+
+{Observe using the logic analyser that no task is executed although the tasks should be periodic.}{}
+
+\E{Find the reason of this deadlock by drawing a time graph of the different calls to the mutexes}{}
+
+
+\E{
+    Fix this problem using the parameter \kw{xTicksToWait} of \kw{xSemaphoreTake()}.
+}{}
