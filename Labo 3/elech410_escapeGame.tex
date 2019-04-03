@@ -40,6 +40,11 @@
 %\usepackage{rotating}
 \usepackage{upgreek}
 
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{positioning, fit, calc, shapes, arrows}
+\usepackage[underline=false]{pgf-umlsd}
+
 \newdateformat{mydate}{2018--2019}%hack pour remplacer \THEYEAR
 
 %cyr
@@ -93,6 +98,8 @@
 
 \newcommand{\reg}[1]{\texttt{reg#1}}
 
+%TODO Remove that
+\newcommand{\uCOSII}{$\upmu$C/OS-II}
 \newcommand{\rtos}{FreeRTOS}
 
 \newcommand{\kw}[1]{\texttt{#1}}
@@ -153,9 +160,7 @@
     % for tikz pict
 
     \maketitle
-	\input{partials/intro.tex}
-
-    \input{partials/exercices.tex}\textbf{}
+    \input{partials/escape.tex}
 
     \vfill
     \footnotesize{

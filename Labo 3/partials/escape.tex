@@ -1,0 +1,51 @@
+\section*{Find the code !}
+
+To make sure you understood how CAN communication works, here is a final task.
+
+Your goal is to retrieve a code from a node connected to the network (the \textit{master} node).
+The difficulty is that the master node requires a special procedure in order to deliver the code.
+
+The master node sends sporadic messages containing a single byte (\textit{token}).
+If you want to know the code you should respond by encoding the token and sending it within $ 500~ms $.
+The master will respond with the code in ASCII that you can directly print it on your LCD.
+\newcommand{\bloodymess}[7][0]{
+  \stepcounter{seqlevel}
+  \path
+  (#2)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess from) {};
+  \addtocounter{seqlevel}{#1}
+  \path
+  (#4)+(0,-\theseqlevel*\unitfactor-0.7*\unitfactor) node (mess to) {};
+  \draw[->,>=angle 60] (mess from) -- (mess to) node[midway, above]
+  {#3};
+
+  \if R#5
+    \node (#3 from) at (mess from) {\llap{#6~}};
+    \node (#3 to) at (mess to) {\rlap{~#7}};
+  \else\if L#5
+         \node (#3 from) at (mess from) {\rlap{~#6}};
+         \node (#3 to) at (mess to) {\llap{#7~}};
+       \else
+         \node (#3 from) at (mess from) {#6};
+         \node (#3 to) at (mess to) {#7};
+       \fi
+  \fi
+}
+\begin{figure}[h]
+    \centering
+    \begin{sequencediagram}
+        \newinst{c}{Master}
+        \newinst[6]{s}{Node}
+
+        \bloodymess[1]{c}{Token on 0x020}{s}{R}{Random start}{}
+        \bloodymess[1]{s}{Encrypted token on 0x03X}{c}{L}{}{$ > 500~ms $}
+        \bloodymess[1]{c}{Code in ASCII on 0x03X}{s}{R}{}{}
+    \end{sequencediagram}
+    \caption{}
+\end{figure}
+
+Open the project \kw{escape\_game}.
+
+To avoid any overlaps between groups, every groups will listen and transmit messages with ID equal to their table plus 30 in hexadecimal e.g. table 5 will listen and transmit messages with ID 0x035.
+The initial token will be sent on the 0x020 ID.
+
+To decode the token we provide you the function \kw{decode(token)}, it depends on your table number so you need to change it. 

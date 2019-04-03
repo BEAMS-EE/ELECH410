@@ -1,0 +1,54 @@
+\section{CAN and PSoC}
+Plug the CAN network yellow twisted pair in the DB9 connector of the PSoC extension Board.
+You will program the CAN peripheral of the PSoC to receive messages transmitted continuously by a PC connected to the network, then to send message to that PC.
+
+\subsection{Read the manual,\dots}
+
+Open the \kw{Getting\_Started\_with\_CAN.pdf} file and read the CAN Basics section.
+
+\E{
+    Describe the content of a CAN frame.
+}{}
+
+\E{
+    If you watch closely the schematics of the extension board (\kw{Extension\_PSoC.pdf}) you will notice that the PSoC is not directly connected to the DB9 connector. What component is required to make that connection and what does it do ?
+}{}
+\reponse{
+    MCP2562,...
+}
+
+Open the project \kw{can\_rx}.
+
+A node in the lab connected to the CAN network is sending a message. This project is designed to print the message to the LCD. 
+
+\E{
+    In the \kw{TopDesign} tab, open the configuration window of the the CAN instance.
+    \begin{itemize}
+        \item Go to the \kw{Receive Buffers} tab and use the datasheet to understand how those buffers are configured.
+        \item In the \kw{main.c} you have an example of how to handle received messages. What is the \kw{CAN\_BUF\_SR\_REG} variable and how is it used here ? You might want to have a look here \url{https://community.cypress.com/docs/DOC-15595}.
+    \end{itemize}
+}{}
+\reponse{
+    \kw{CAN\_BUF\_SR\_REG} is the status register of the rx and tx buffer. When a bit is 1 it means that the message linked with the corresponding buffer just arrived. When the message is read it should be acknowledged with \kw{CAN\_RX\_ACK\_MESSAGE}.
+}
+
+\newpage
+
+\subsection{\dots and use your knowledge}
+
+Now that you saw how to receive and transmit messages through CAN network, let's apply what you learned.
+
+In the CAN network of the lab, one node is programmed to send periodic messages on with IDs 0x042, 0x043 and 0x044.
+
+Keep the project \kw{can\_rx} open.
+\E{
+    Adapt the code to print the content of the three messages whenever a message is received.
+}{}
+
+Open the project \kw{can\_tx}.
+
+This project consist in sending a message with the IDs 0x045 every 2 seconds.
+
+\E{
+    Adapt the project so that one time out of two it sends a second message with IDs 0x046. The message content should be composed of as many byte as there members in your group and each byte should be the ascii code the first letter in each member's name.
+}{}
