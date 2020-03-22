@@ -1,0 +1,78 @@
+\section*{Game description}
+
+In this game you will try to beat the current pandemic propagation by researching for a vaccine, producing medicine and containing sudden contamination burst.
+The only objective is to find a cure before the population get totally infected.
+\begin{itemize}
+	\item The percentage of healthy population, \kw{populationCntr}, starts at $ 100\% $. \textbf{You lose} when it reaches $ 0\% $.
+	\item The vaccine counter, \kw{vaccineCntr}, starts at $ 0\% $. \textbf{You win} if it reaches $ 100\% $ before the whole population is infected.
+	\item The amount of medicine pills available (in million), \kw{medicineCntr}, will help you to slow down the disease propagation.
+\end{itemize}
+
+You have at your disposal one research lab.
+It can either work on a cure or produce medicine.
+It cannot do both at the same time and when it starts a job it should work until completion\footnote{The lab is a shared resource.}.
+
+
+\subsection*{There are three types of event}
+
+\paragraph{Vaccine Research}
+Every $ 3s $, the \textit{gameTask} will drop a \textit{clue}.
+If you manage to make the lab work on the \textit{clue} and return its result within $ 3s $ then the \kw{vaccineCntr} is increased by $ 3 $.
+
+\paragraph{Spread of the disease}
+Every $ 5s $, the percentage of healthy population is decreased by $ 5 - $ \kw{medicineCntr}.
+The pills can only be used once.
+This is why you should keep producing them.
+When it is not working on a \textit{clue} the research lab should produce as many pills as possible.
+
+\paragraph{Contamination}
+The \textit{gameTask} will randomly contaminate an individual.
+If you do not \textit{quarantine} the population within $ 10ms $, $ 20\% $ get infected instantly.
+
+\section*{Specifications}
+Open the project \kw{pandemic}.
+
+The whole game is coded in \textit{pandemic.c}.
+Read its documentation in the header file (\textit{pandemic.h}) to better understand how to use it.\\
+
+You should only write your code in \textit{main.c}.
+You may use as many task as you want as long as their priority is lower than the \textit{gameTask}.\\
+
+Write a task that print the \kw{populationCntr}, \kw{vaccineCntr} and \kw{medicineCntr} on the left side of the display.
+The last 8 characters of the LCD are reserved to the \kw{gameTask}.\\
+
+When the \textit{gameTask} sends a contamination it calls the \kw{releaseContamination()} function.
+You should override this function in \textit{main.c} in order \textbf{to communicate with your own tasks}.
+%This function should be treated as an interruption, its code should be as short as possible.
+The \kw{quarantine()} function should be launched from your own task.
+\textbf{The following is strictly forbidden} (otherwise it would make things too easy):
+\begin{lstlisting}[
+	label={lst:listing 2}
+]
+	void releaseContamination(){
+	    quarantine();
+	}
+\end{lstlisting}
+
+
+The \textit{gameTask} releases clues for the vaccine in a similar manner, (see \kw{releaseClue(clue)}). You should again override this function in the \textit{main.c} in order \textbf{to communicate with your own tasks}. 
+When this happens your code should call the functions \kw{assignMissionToLab()} and \kw{shipVaccine()} from within your own tasks.
+\begin{lstlisting}[
+	label={lst:listing 2}
+]
+	// [...]
+	vaccine = assignMissionToLab(clue);
+	shipVaccine(vaccine);
+	// [...]
+\end{lstlisting}
+
+To produce medicine pill use:
+\begin{lstlisting}[
+	label={lst:listing 2}
+]
+	// [...]
+	medecine = assignMissionToLab(0);
+	shipMedicine(medecine);
+	// [...]
+\end{lstlisting}
+
