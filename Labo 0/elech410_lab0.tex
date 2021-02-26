@@ -1,0 +1,177 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage{stringenc} % for grffile
+\usepackage{ucs}
+\usepackage{amsthm} %numéroter les questions
+\usepackage[english]{babel}
+\usepackage{datetime}
+\usepackage{xspace} % typographie IN
+\usepackage{hyperref}% hyperliens
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+\usepackage[english]{varioref} %voir x p y
+\usepackage{fancyhdr}% en têtes
+%\input cyracc.def
+\usepackage[]{graphicx} %include pictures
+%\usepackage[encoding,inputencoding=utf8,filenameencoding=utf8]{grffile}
+%\usepackage[extendedchars,inputencoding=latin1,filenameencoding=latin1]{grffile}
+\usepackage[siunitx ]{circuitikz}
+\usepackage{gnuplottex}
+\usepackage{ifthen}
+\graphicspath{{./figures/}}
+%\usepackage{array}
+\usepackage{amsmath}
+\usepackage[]{xcolor}
+\usepackage{tikz}
+\usepackage{tikz-timing}
+\usetikzlibrary{scopes}
+\usetikzlibrary{backgrounds}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage[top=1 in, bottom=1 in, left=1.3 in, right=1 in]{geometry} % Yeah, that's bad to play with margins
+\usepackage[]{pdfpages}
+\usepackage{pdflscape}
+\usepackage[]{attachfile}
+%\usepackage{colortbl}
+%\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage[ ]{subfig}
+%\usepackage{rotating}
+\usepackage{upgreek}
+\usepackage[normalem]{ulem}
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+
+\newdateformat{mydate}{2020--2021}%hack pour remplacer \THEYEAR
+
+%cyr
+%\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
+\renewcommand{\marginpar}[1]{} %surcharge pour /marginpar
+
+\newboolean{corrige}
+%\setboolean{corrige}{true}%corrigé
+\setboolean{corrige}{false}% pas de corrigé
+
+\newboolean{annexes}
+%\setboolean{annexes}{true}%annexes
+\setboolean{annexes}{false}% pas de annexes
+
+\newboolean{mos}
+%\setboolean{mos}{true}%annexes
+\setboolean{mos}{false}% pas de annexes
+
+\usepackage{aeguill} %guillemets
+
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[ELEC-H-410] Real-Time systems Lab n° 0: PSoC and logic analyzers}
+\rhead{\mydate\today\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{Corrigé}{}}
+\cfoot{}
+%%
+
+\pdfinfo{
+    /Author (BEAMS)
+    /Title (Lab n° 0 ELEC-H-410, RTOS)
+    /ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+    pdftitle={Lab n° 0 [ELEC-H-410] Real-Time systems},
+    pdfauthor={BEAMS},
+    pdfsubject={PSoC and logic analyzers}
+}
+
+\theoremstyle{definition}% questions pas en italique
+\newtheorem{E}{\color{blue}Exercise}[] % numéroter les questions [section] ou non []
+
+\newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
+	\ifthenelse {\boolean{corrige}} {\paragraph{Réponse :} #1} {}
+ }
+
+\newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
+
+\newcommand{\on}[1]{\operatorname{#1}}
+
+\newcommand{\reg}[1]{\texttt{reg#1}}
+
+\newcommand{\rtos}{FreeRTOS}
+
+\newcommand{\kw}[1]{\texttt{#1}}
+
+\setlength{\parskip}{1ex plus .5ex minus .5ex} % espacement entre paragraphes
+\setlength{\parindent}{0 ex plus 0ex minus 0 ex} % retrait en début de §
+
+\def\labelitemi{--}
+\setlist{parsep=0pt,itemsep=0pt,style=standard,leftmargin=\parindent, align=left} % pas d'espace prohibitif entre les items
+\setlist{nolistsep}
+
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+%\setlength{\tabcolsep}{0pt} %no extra space in cells to keep constant tabular width
+
+\date{\vspace{-1cm}\mydate\today}
+\title{\vspace{-2cm} Lab n° 0\\ Real-Time systems [ELEC-H-410]\\ Introduction to PSoC microcontrollers and logic analyzers~\ifthenelse{\boolean{corrige}}{~\\Corrigé}{}}
+
+%\author{\vspace{-1cm}}%\textsc{Yannick Allard}}
+
+
+\lstdefinestyle{customasm}{
+    % belowcaptionskip=1\baselineskip,
+    % frame=L,
+    % xleftmargin=\parindent,
+    language=[x86masm]Assembler,
+    basicstyle=\footnotesize\ttfamily,
+    commentstyle=\itshape\color{purple!40!black},
+    comment=[l]//,
+}
+\lstdefinestyle{customc}{
+    belowcaptionskip=1\baselineskip,
+    breaklines=true,
+    frame=L,
+    xleftmargin=\parindent,
+    language=C,
+    showstringspaces=false,
+    basicstyle=\footnotesize\ttfamily,
+    keywordstyle=\bfseries\color{green!40!black},
+    commentstyle=\itshape\color{purple!40!black},
+    identifierstyle=\color{blue},
+    stringstyle=\color{orange},
+}
+\lstset{escapechar=@,style=customc}
+
+\begin{document}
+
+    % Introduce a new counter for counting the nodes needed for circling
+    \newcounter{nodecount}
+    % Command for making a new node and naming it according to the nodecount counter
+    \newcommand\tabnode[1]{\addtocounter{nodecount}{1} \tikz \node (\arabic{nodecount}) {#1};}
+    
+    % Some options common to all the nodes and paths
+    \tikzstyle{every picture}+=[remember picture,baseline]
+    \tikzstyle{every node}+=[inner sep=0pt,anchor=base]
+    \tikzstyle{every path}+=[thick, rounded corners]
+    % for tikz pict
+    
+    \maketitle
+    \input{partials/intro.tex}
+    \newpage 
+		\input{partials/exercices_psoc.tex}
+		\input{partials/exercices_logic_analyzer.tex}
+		
+    \vfill
+    \footnotesize{Found an error? Let us know: \url{https://github.com/BEAMS-EE/ELECH410/issues}}
+    
+		\appendix
+    \newpage \input{partials/appendix_software_psoc.tex}
+		\newpage \input{partials/appendix_extension_psoc.tex}
+		\newpage \input{partials/appendix_software_logic_analyzer.tex}
+
+\end{document}
+
+
+
+

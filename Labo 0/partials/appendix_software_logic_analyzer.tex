@@ -1,0 +1,23 @@
+
+\section{Logic Analyzer software}
+\label{app:software_logic_analyzer}
+
+To control and operate the logic analyzer, you must install the drivers for the logic analyzer and the \texttt{PulseView} software. All of these are available on \url{https://sigrok.org/wiki/Downloads}, where you need to download: 
+\begin{itemize}
+	\item \texttt{sigrok-cli}, which contains the drivers for the logic analyzers; 
+	\item \texttt{PulseView}, which allows to operate the logic analyzers and visualize the data. 
+\end{itemize}
+Download and install both of these programs. 
+
+Once both of these programs are installed, connect the logic analyzer to an USB port, and run \texttt{zadig.exe (sigrok-cli)}. Click on \texttt{Install Driver}. Once the drivers are installed, close the program. 
+
+You can now run \texttt{PulseView}. If the logic analyzer is connected, it should be recognized by \texttt{PulseView} automatically (it should appear as ``Saleae Logic'' in the connected device). If it's not connected automatically, you should do the following: 
+\begin{itemize}
+	\item Click on the small arrow next to \texttt{Demo device} or \texttt{<No Device>}; 
+	\item Click on \texttt{Connect to Device}; 
+	\item In the \texttt{Choose the driver} menu, select \texttt{fx2lafw (generic driver for FX2 based LAs)}; 
+	\item Click \texttt{Scan for devices using the driver above}; 
+	\item Select \texttt{Saleae Logic with 8 channels} and click \texttt{OK}. 
+\end{itemize}
+You should see the 8 channels D0-D7, corresponding to the 8 logic channels of the logic analyzer. 
+
