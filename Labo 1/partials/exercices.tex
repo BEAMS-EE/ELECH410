@@ -5,7 +5,7 @@ it a priority, in an intelligent way. The hardware will be composed of the PSoC 
 
 If you are not confident with C programming, read \texttt{C\_language\_for\_uC.pdf}.
 
-Principles of the logic analyser are explained in the chapter 9; an ``how to" guide for the Asix Sigma2 logic analyser is in Appendix \ref{ap:la}.
+Principles of the logic analyser are explained in the chapter 9; as well as in Lab 0.
 
 \subsection{Creation of a task under \rtos~}
 
@@ -16,7 +16,7 @@ Principles of the logic analyser are explained in the chapter 9; an ``how to" gu
     operating system.
 
     % TODO Addapt
-    {\color{red} Copy the project \verb!\ELEC-H-410\lab1\!\textbf{ex1\_blinky} in the network share  to your computer} and open the project with \texttt{PSoC Creator}.
+    {\color{red} Copy the project \verb!\ELEC-H-410\lab1\!\textbf{ex1\_blinky} to your computer} and open the project with \texttt{PSoC Creator}.
 
     \vbox{In the file main.c you will find the  \verb!main! function  (see Listing \ref{lst:listing 1}) in which are executed :
     \begin{itemize}
@@ -117,7 +117,7 @@ Principles of the logic analyser are explained in the chapter 9; an ``how to" gu
             \item Switch the logic analyser on and launch the display interface on the PC.
             \item Start your program \kw{Periodicity} on the microcontroller and launch a first data acquisition with the logic analyser.
             \item Observe preemptions of certain tasks when a higher priority task is active (see signals \kw{input1}, \kw{input2} and \kw{input3} whose value is 1 when the tasks \kw{task1}, \kw{task2} and \kw{task3} are respectively active, \textit{i.e.}, between its first instruction until its completion).
-            \item Use the logic analyser to measure the real period of real activation of each task. Hint: press \textit{space} to set a marker and move the cursor, the time between the cursor and the marker will be shown in a tooltip. Are they exactly in conformity with the desired periods? Identify 2 causes of these errors.
+            \item Use the logic analyser to measure the real period of real activation of each task. Are they exactly in conformity with the desired periods? Identify 2 causes of these errors.
         \end{itemize}
     }{}\reponse{
         Tasks are delayed by a complete period at the end of each iteration without taking into account the time spent inside the loop. 
@@ -159,7 +159,7 @@ Principles of the logic analyser are explained in the chapter 9; an ``how to" gu
     \subsubsection{Choice of the priorities}
 
         As explained earlier, the choice of the priorities of the task is the only tool at our disposal to help the operating system to choose which task must be running at which time. To be convinced of the importance of a judicious choice of these priorities, we will look at a simple example.
-        \E{Open the project \kw{Priorites}.}{}
+        \E{Open the project \kw{Priorities}.}{}
         \begin{itemize}
             \item The task \kw{task1} should run every 1ms
             \item The task \kw{task2} should run every 100ms

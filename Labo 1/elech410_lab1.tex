@@ -40,8 +40,12 @@
 %\usepackage{rotating}
 \usepackage{upgreek}
 \usepackage[normalem]{ulem}
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
 
-\newdateformat{mydate}{2019--2020}%hack pour remplacer \THEYEAR
+\newdateformat{mydate}{2020--2021}%hack pour remplacer \THEYEAR
 
 %cyr
 %\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
@@ -71,7 +75,7 @@
 
 \pdfinfo{
     /Author (BEAMS)
-    /Title (Lab n° 1 ELEC-H-410, uCOS-II)
+    /Title (Lab n° 1 ELEC-H-410, FreeRTOS)
     /ModDate (D:\pdfdate)
 }
 
@@ -163,7 +167,7 @@
         Found an error? Let us know: \url{https://github.com/BEAMS-EE/ELECH410/issues}
     }
     
-    \newpage
-    \input{partials/appendix.tex}
+    %\newpage
+    %\input{partials/appendix.tex}
 
 \end{document}
