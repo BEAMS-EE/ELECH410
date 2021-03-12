@@ -24,9 +24,6 @@ reached a certain point of its execution, then \kw{Task1} resumes its execution.
     }
 \end{lstlisting}
 
-% It should be noted that several ``flags" can be posted in the same semaphore (counting semaphore). Thus a task can require that an event occurs several times before resuming its execution. In the same way, several tasks can synchronise on the same event if this event posts several flags in the same semaphore (each task gets one of the flags).
-
-% For more information, see \uCOSII~user's manual pp 92-97.
 
 Open the project entitled \kw{synchronisation}.
 
@@ -43,11 +40,10 @@ The project contains two tasks:
 To ensure continuous streaming of the sound, two buffers of samples are being used (\kw{buf1[]} and \kw{buf[2]}). 
 When one is being decoded by the \kw{decodeTask} task, the other one is played with the \kw{dacTask}. 
 Of course this only works if both tasks are synchronised.
-A first semaphore was placed in this code so that the first samples are not sent to the DAC before they actually have been decoded.
-If you run the code you will see that this does not work.
+In the given code, the synchronization is not implemented. If you run the code you will see that this does not work: no sound comes out of the speakers. 
 
 \E{
     Modify the code so that a new batch of decoded samples is not written in one of the two buffers before the previous batch has been completely send to the DAC.
-    You may need to add another semaphore.
+    You may need to use two semaphores.
 }{}
 %\E{Use an additional semaphore so that a new batch of decoded samples is not written in one of the two buffers (\kw{buf0[]} or \kw{buf1[]}) by \kw{AppTaskSpeex} before the previous batch has been completely send to the loudspeaker by \kw{AppTaskDac}. }{}

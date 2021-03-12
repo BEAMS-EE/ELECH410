@@ -8,7 +8,7 @@ Open the project \kw{resource\_sharing}.
 	\begin{itemize}
 		\item Analyse the code, knowing that each task is executed only \textbf{once} (\kw{vTaskSuspend()} is called at the end of the \textit{for} loop), what should be the value of the global variable \kw{cntr} at the end of the execution?
 		\item Compile and execute the code.
-		\item Using a watch window and the debugger, check the value of \kw{cntr}. Is this the expected result? Why? (Use the logic analyser to help)
+		\item Using a watch window and the debugger, check the value of \kw{cntr}. Is this the expected result? Why? (Use the logic analyser to help. Note that GPIO J14 is toggled from low to high at the beginning of the \kw{main} function so that you can trigger the logic analyzer to the beginning of the execution. )
 	\end{itemize}
 }{}\reponse{
     \kw{cntr} should be $ 2 $ at the end of the execution.
@@ -16,11 +16,8 @@ Open the project \kw{resource\_sharing}.
     \kw{cntr} is equals to $ 1 $. 
 }
 
-%To protect the shared variables, uC/OS-II proposes two main solutions: \textbf{masking the interruptions} or using a \textbf{mutex}.
 
-%The first solution is very efficient, but can only be used for very short lapses of time (shorter than the critical sections created by the RTOS itself), otherwise the latency time of the interruptions is increased and preemption of the task is blocked, which is against real-time.
-
-The \textbf{mutex} (see chapter over priority-driven systems) is a convenient way to protect shared data, while still handling interrupts and authorise the preemption of the running task. Note: when a task acquires a resource via \kw{xSemaphoreGive()}, it should not forget to release it via \kw{xSemaphoreTake()}. A pseudo code is given in Listing \ref{lst:listing 1}.
+The \textbf{mutex} (see chapter over priority-driven systems) is a convenient way to protect shared data, while still handling interrupts and authorise the preemption of the running task. Note: when a task acquires a resource via \kw{xSemaphoreTake()}, it should not forget to release it via \kw{xSemaphoreGive()}. A pseudo code is given in Listing \ref{lst:listing 1}.
 
 \vbox{
 \begin{lstlisting}[caption={Mutex declaration/use}, label={lst:listing 1}]
