@@ -33,10 +33,21 @@ If you do not \textit{quarantine} the population within $ 10ms $, $ 20\% $ get i
 Open the project \kw{pandemic}.
 
 The whole game is coded in \textit{pandemic.c}.
-Read its documentation in the header file (\textit{pandemic.h}) to better understand how to use it.\\
+Read its documentation in the header file (\textit{pandemic.h}) to better understand how to use it. You can call the following functions from the \textit{pandemic.h} library: 
+\begin{itemize}
+	\item \texttt{quarantine( void )}
+	\item \texttt{assignMissionToLab( Token mission )}
+	\item \texttt{shipMedicine( Token medicine )}
+	\item \texttt{shipVaccine( Token vaccine )}
+	\item \texttt{getPopulationCntr( void )}
+	\item \texttt{getVaccineCntr( void )}
+	\item \texttt{getMedicineCntr( void )}
+\end{itemize}
+The functions are self-explanatory, and the comments in the (\textit{pandemic.h}) file should help you understand how to use them. 
+\\
 
 You should only write your code in \textit{main.c}.
-You may use as many task as you want as long as their priority is lower than the \textit{gameTask}.\\
+You may use as many task as you want as long as their priority is lower than the \textit{gameTask} (i.e. \textit{gameTask} has a priority of 20, so your tasks cannot have a priority higher than 19).\\
 
 Write a task that print the \kw{populationCntr}, \kw{vaccineCntr} and \kw{medicineCntr} on the left side of the display.
 The last 8 characters of the LCD are reserved to the \kw{gameTask}.\\

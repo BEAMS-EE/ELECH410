@@ -39,8 +39,12 @@
 \usepackage[ ]{subfig}
 %\usepackage{rotating}
 \usepackage{upgreek}
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
 
-\newdateformat{mydate}{2019--2020}%hack pour remplacer \THEYEAR
+\newdateformat{mydate}{2020--2021}%hack pour remplacer \THEYEAR
 
 %cyr
 %\newcommand\textcyr[1]{{\fontencoding{OT2}\fontfamily{wncyr}\selectfont #1}}
@@ -70,7 +74,7 @@
 
 \pdfinfo{
     /Author (ULB -- BEAMS)
-    /Title (Lab 3 ELEC-H-410)
+    /Title (Project ELEC-H-410)
     /ModDate (D:\pdfdate)
 }
 
@@ -153,7 +157,7 @@
     % for tikz pict
 
     \maketitle
-	\input{partials/intro.tex}
+		\input{partials/intro.tex}
 
     \input{partials/game.tex}
 
